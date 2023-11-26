@@ -1,3 +1,16 @@
+param
+(
+    [parameter(Mandatory = $true)] [String] $spn_id,
+    [parameter(Mandatory = $true)] [String] $spn_secret,
+    [parameter(Mandatory = $true)] [String] $tenant_id,
+    [parameter(Mandatory = $true)] [String] $subscription_id
+)
+
+Write-Host "Login to subscription..."
+
+az login --service-principal -u $spn_id -p $spn_secret -t $tenant_id
+az account set -s $subscription_id
+
 Write-Host "Creating logs folder..."
 
 mkdir logs
