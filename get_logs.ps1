@@ -17,8 +17,8 @@ mkdir logs
 cd logs
 
 Write-Host "Getting Databricks logs..."
-Invoke-WebRequest -Uri "https://downloads.databricks.com/cli/0.15.0/databricks-cli-0.15.0-py3-none-any.whl" -OutFile "databricks-cli.whl"
-pip install databricks-cli.whl
+python -m pip install --upgrade pip setuptools wheel
+pip install databricks-cli
 
 # Storage accounts
 
