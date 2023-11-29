@@ -16,6 +16,10 @@ Write-Host "Creating logs folder..."
 mkdir logs
 cd logs
 
+Write-Host "Getting Databricks logs..."
+Invoke-WebRequest -Uri "https://downloads.databricks.com/cli/0.15.0/databricks-cli-0.15.0-py3-none-any.whl" -OutFile "databricks-cli.whl"
+pip install databricks-cli.whl
+
 # Storage accounts
 
 Write-Host "Getting storage accounts logs..."
@@ -91,7 +95,7 @@ foreach ($datafactory in $datafactories) {
 $integration_runtime_info | ConvertTo-Json | Out-File -FilePath adf_shir.json
 
 Write-Host "Getting Databricks logs..."
-curl -O https://downloads.databricks.com/cli/0.15.0/databricks-cli-0.15.0-py3-none-any.whl
+Invoke-WebRequest -Uri "https://downloads.databricks.com/cli/0.15.0/databricks-cli-0.15.0-py3-none-any.whl" -OutFile "databricks-cli.whl"
 pip install databricks-cli.whl
 
 databricks --version
