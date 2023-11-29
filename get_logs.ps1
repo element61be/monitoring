@@ -90,7 +90,8 @@ foreach ($datafactory in $datafactories) {
 
 $integration_runtime_info | ConvertTo-Json | Out-File -FilePath adf_shir.json
 
-#### Databricks
+Write-Host "Getting Databricks logs..."
+databricks --version
 
 $databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
 $databricks_workspaces
