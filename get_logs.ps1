@@ -17,6 +17,8 @@ mkdir logs
 cd logs
 
 Write-Host "Getting Databricks logs..."
+Resolve-DnsName downloads.databricks.com
+
 python -m pip install --upgrade pip setuptools wheel
 pip install databricks-cli
 
