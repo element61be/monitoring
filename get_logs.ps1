@@ -16,11 +16,40 @@ Write-Host "Creating logs folder..."
 mkdir logs
 cd logs
 
-Write-Host "Getting Databricks logs..."
-Resolve-DnsName downloads.databricks.com
+# Databricks
 
+Write-Host "Getting Databricks logs..."
 python -m pip install --upgrade pip setuptools wheel
 pip install databricks-cli
+
+$databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
+$databricks_workspaces
+# loop over all databricks workspaces and retrieve the clusters
+
+$AAD_TOKEN = $(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d | jq -r .accessToken)
+$env:DATABRICKS_AAD_TOKEN = $AAD_TOKEN
+
+$cluster_info = @()
+$databricks_workspace_info = @{}
+foreach ($databricks_workspace in $databricks_workspaces) {
+    $databricks_workspace_name = $databricks_workspace.name
+    $databricks_workspace_resource_group = $databricks_workspace.resourceGroup
+    Write-Host "Databricks Workspace Name: $($databricks_workspace.name)"
+    Write-Host "Databricks Workspace Resource Group: $($databricks_workspace.resourceGroup)"
+    $workspace_info = az databricks workspace show --name $databricks_workspace_name --resource-group $databricks_workspace_resource_group | ConvertFrom-Json
+    $databricks_workspace_info[$databricks_workspace_name] = $workspace_info
+
+    $DATABRICKS_HOST = "https://$($workspace_info.workspaceUrl)"
+    # Write-Host $DATABRICKS_HOST
+    $env:DATABRICKS_HOST = $DATABRICKS_HOST
+
+    databricks configure --profile dbrx --host $DATABRICKS_HOST --aad-token
+    $clusters = databricks clusters list --profile dbrx --output json | ConvertFrom-Json
+    $cluster_info += $clusters
+}
+
+$databricks_workspace_info | ConvertTo-Json | Out-File -FilePath databricks_workspaces.json
+$cluster_info | ConvertTo-Json | Out-File -FilePath databricks_clusters.json
 
 # Storage accounts
 
@@ -96,37 +125,3 @@ foreach ($datafactory in $datafactories) {
 
 $integration_runtime_info | ConvertTo-Json | Out-File -FilePath adf_shir.json
 
-Write-Host "Getting Databricks logs..."
-Invoke-WebRequest -Uri "https://downloads.databricks.com/cli/0.15.0/databricks-cli-0.15.0-py3-none-any.whl" -OutFile "databricks-cli.whl"
-pip install databricks-cli.whl
-
-databricks --version
-
-$databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
-$databricks_workspaces
-# loop over all databricks workspaces and retrieve the clusters
-
-$AAD_TOKEN = $(az account get-access-token --resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d | jq -r .accessToken)
-$env:DATABRICKS_AAD_TOKEN = $AAD_TOKEN
-
-$cluster_info = @()
-$databricks_workspace_info = @{}
-foreach ($databricks_workspace in $databricks_workspaces) {
-    $databricks_workspace_name = $databricks_workspace.name
-    $databricks_workspace_resource_group = $databricks_workspace.resourceGroup
-    Write-Host "Databricks Workspace Name: $($databricks_workspace.name)"
-    Write-Host "Databricks Workspace Resource Group: $($databricks_workspace.resourceGroup)"
-    $workspace_info = az databricks workspace show --name $databricks_workspace_name --resource-group $databricks_workspace_resource_group | ConvertFrom-Json
-    $databricks_workspace_info[$databricks_workspace_name] = $workspace_info
-
-    $DATABRICKS_HOST = "https://$($workspace_info.workspaceUrl)"
-    # Write-Host $DATABRICKS_HOST
-    $env:DATABRICKS_HOST = $DATABRICKS_HOST
-
-    databricks configure --profile dbrx --host $DATABRICKS_HOST --aad-token
-    $clusters = databricks clusters list --profile dbrx --output json | ConvertFrom-Json
-    $cluster_info += $clusters
-}
-
-$databricks_workspace_info | ConvertTo-Json | Out-File -FilePath logs/databricks_workspaces.json
-$cluster_info | ConvertTo-Json | Out-File -FilePath logs/databricks_clusters.json
