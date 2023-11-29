@@ -19,7 +19,9 @@ cd logs
 # Databricks
 
 Write-Host "Getting Databricks logs..."
+Write-Host "Upgrading pip..."
 python -m pip install --upgrade pip setuptools wheel
+Write-Host "Installing databricks cli..."
 pip install databricks-cli
 
 $databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
