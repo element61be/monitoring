@@ -91,6 +91,9 @@ foreach ($datafactory in $datafactories) {
 $integration_runtime_info | ConvertTo-Json | Out-File -FilePath adf_shir.json
 
 Write-Host "Getting Databricks logs..."
+curl -O https://downloads.databricks.com/cli/0.15.0/databricks-cli-0.15.0-py3-none-any.whl
+pip install databricks-cli.whl
+
 databricks --version
 
 $databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
