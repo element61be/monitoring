@@ -18,7 +18,7 @@ cd logs
 
 # Databricks
 
-# Write-Host "Getting Databricks logs..."
+Write-Host "Getting Databricks logs..."
 # Write-Host "Upgrading pip..."
 # python -m pip install --upgrade pip setuptools wheel
 # Write-Host "Installing databricks cli..."
