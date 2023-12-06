@@ -19,16 +19,11 @@ cd logs
 # Databricks
 
 Write-Host "Getting Databricks logs..."
-# Write-Host "Upgrading pip..."
-# python -m pip install --upgrade pip setuptools wheel
-# Write-Host "Installing databricks cli..."
-# python -m pip install databricks-cli
-# $env:PATH += ";/home/AzDevOps/.local/bin"
-# echo $Env:PATH
+
 databricks -v
 
 
-az extension add --name databricks
+az extension add --name databricks --debug
 
 az extension list
 
