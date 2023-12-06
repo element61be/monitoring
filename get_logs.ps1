@@ -27,12 +27,9 @@ Write-Host "Getting Databricks logs..."
 # echo $Env:PATH
 databricks -v
 
-try {
-    az extension add --name databricks
-} catch {
-    Write-Host "Error installing Databricks extension: $_"
-    exit 1
-}
+
+az extension add --name databricks
+
 az extension list
 
 
