@@ -43,6 +43,9 @@ foreach ($databricks_workspace in $databricks_workspaces) {
     $workspace_info = az databricks workspace show --name $databricks_workspace_name --resource-group $databricks_workspace_resource_group | ConvertFrom-Json
     $databricks_workspace_info[$databricks_workspace_name] = $workspace_info
 
+    $workspace_info
+    $workspace_info.workspaceUrl
+
     $DATABRICKS_HOST = "https://$($workspace_info.workspaceUrl)"
     Write-Host "DATABRICKS_HOST: $DATABRICKS_HOST"
 
