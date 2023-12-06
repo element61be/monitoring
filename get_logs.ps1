@@ -33,7 +33,8 @@ try {
     Write-Host "Error installing Databricks extension: $_"
     exit 1
 }
-az databricks workspace
+az extension list
+
 
 $databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
 $databricks_workspaces
