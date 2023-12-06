@@ -48,7 +48,9 @@ foreach ($databricks_workspace in $databricks_workspaces) {
     # Write-Host $DATABRICKS_HOST
     $env:DATABRICKS_HOST = $DATABRICKS_HOST
     databricks -v
+    Write-Host "Initializing the connection"
     databricks configure --profile dbrx --host $DATABRICKS_HOST --aad-token
+    Write-Host "Listing the clusters"
     databricks clusters list --profile dbrx --output json
     $clusters = databricks clusters list --profile dbrx --output json | ConvertFrom-Json
     $cluster_info += $clusters
