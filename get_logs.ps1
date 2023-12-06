@@ -27,6 +27,13 @@ Write-Host "Getting Databricks logs..."
 # echo $Env:PATH
 databricks -v
 
+try {
+    az extension add --name databricks
+} catch {
+    Write-Host "Error installing Databricks extension: $_"
+    exit 1
+}
+
 $databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
 $databricks_workspaces
 # loop over all databricks workspaces and retrieve the clusters
