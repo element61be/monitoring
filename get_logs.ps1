@@ -23,7 +23,7 @@ Write-Host "Getting Databricks logs..."
 databricks -v
 
 
-az extension add --name databricks --debug
+sudo az extension add --name databricks --debug
 
 az extension list
 
