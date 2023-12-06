@@ -49,6 +49,7 @@ foreach ($databricks_workspace in $databricks_workspaces) {
     $env:DATABRICKS_HOST = $DATABRICKS_HOST
     databricks -v
     databricks configure --profile dbrx --host $DATABRICKS_HOST --aad-token
+    databricks clusters list --profile dbrx --output json
     $clusters = databricks clusters list --profile dbrx --output json | ConvertFrom-Json
     $cluster_info += $clusters
 }
