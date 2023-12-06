@@ -22,11 +22,9 @@ Write-Host "Getting Databricks logs..."
 
 databricks -v
 
-
 sudo az extension add --name databricks --debug
 
 az extension list
-
 
 $databricks_workspaces = $(az resource list --subscription $subscription_id --resource-type "Microsoft.Databricks/workspaces" --query "[].{name:name, resourceGroup:resourceGroup}" --output json | ConvertFrom-Json)
 $databricks_workspaces
