@@ -154,7 +154,7 @@ foreach ($nsg in $nsgs) {
     }
 }
 
-$nsg_info | ConvertTo-Json | Out-File -FilePath logs/nsgs.json
+$nsg_info | ConvertTo-Json | Out-File -FilePath nsgs.json
 
 # Routing tables
 
@@ -175,5 +175,5 @@ foreach ($routing_table in $routing_tables) {
     }
 }
 
-$routing_table_info | ConvertTo-Json | Out-File -FilePath logs/routing_tables.json
+$routing_table_info | ConvertTo-Json | Out-File -FilePath routing_tables.json
 
