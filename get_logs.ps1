@@ -135,3 +135,45 @@ foreach ($datafactory in $datafactories) {
 
 $integration_runtime_info | ConvertTo-Json | Out-File -FilePath adf_shir.json
 
+# NSG's
+
+$nsgs = az network nsg list --query "[].{name:name, resourceGroup:resourceGroup}" | ConvertFrom-Json
+$nsgs
+
+$nsg_info = @()
+foreach ($nsg in $nsgs) {
+    $nsg_name = $nsg.name
+    $nsg_resource_group = $nsg.resourceGroup
+    Write-Host "NSG Name: $nsg_name"
+    Write-Host "NSG Resource Group: $nsg_resource_group"
+    $nsg_rules = az network nsg rule list --nsg-name $nsg_name --resource-group $nsg_resource_group | ConvertFrom-Json
+    $nsg_info += @{
+        Name = $nsg_name
+        ResourceGroup = $nsg_resource_group
+        Rules = $nsg_rules
+    }
+}
+
+$nsg_info | ConvertTo-Json | Out-File -FilePath logs/nsgs.json
+
+# Routing tables
+
+$routing_tables = az network route-table list --query "[].{name:name, resourceGroup:resourceGroup}" | ConvertFrom-Json
+$routing_tables
+
+$routing_table_info = @()
+foreach ($routing_table in $routing_tables) {
+    $routing_table_name = $routing_table.name
+    $routing_table_resource_group = $routing_table.resourceGroup
+    Write-Host "Routing Table Name: $routing_table_name"
+    Write-Host "Routing Table Resource Group: $routing_table_resource_group"
+    $routing_table_routes = az network route-table route list --route-table-name $routing_table_name --resource-group $routing_table_resource_group | ConvertFrom-Json
+    $routing_table_info += @{
+        Name = $routing_table_name
+        ResourceGroup = $routing_table_resource_group
+        Routes = $routing_table_routes
+    }
+}
+
+$routing_table_info | ConvertTo-Json | Out-File -FilePath logs/routing_tables.json
+
